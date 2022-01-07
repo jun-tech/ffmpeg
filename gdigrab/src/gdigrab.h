@@ -1,4 +1,4 @@
-/*****************************************************************
+﻿/*****************************************************************
  * 功能说明:
  *  抓取桌面或系统摄像头图像
  * 注意:
@@ -39,7 +39,6 @@ public:
 private:
     AVDictionary        *options;       //参数
     AVFormatContext     *pFormatCtx;    //文件内容信息 这里指屏幕
-    AVFormatContext     *pOutFormatCtx;  //输出
     char                *out_filename;  //
     AVCodecContext      *pCodecCtx;     //解码器上下文
     AVCodec             *pCodec;        //解码器
