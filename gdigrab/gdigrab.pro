@@ -53,10 +53,12 @@ LIBS += -L$$PWD/lib/win64/ffmpeg/lib -lavcodec -lavdevice -lavfilter -lavformat 
 SOURCES += src/main.cpp\
         src/mainwindow.cpp \
     src/gdigrab.cpp \
-    src/aencode.cpp
+    src/aencode.cpp \
+    src/rtmpscreen.cpp
 
 HEADERS  += src/mainwindow.h \
     src/gdigrab.h \
-    src/aencode.h
+    src/aencode.h \
+    src/rtmpscreen.h
 
 FORMS    += src/mainwindow.ui

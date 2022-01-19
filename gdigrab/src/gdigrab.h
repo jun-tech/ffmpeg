@@ -23,6 +23,7 @@ extern "C"{
 #endif
 
 #include "aencode.h"
+#include "rtmpscreen.h"
 
 class Gdigrab {
 public:
@@ -51,6 +52,7 @@ private:
     int                 videoindex;     //视频流索引
 
     AEncode E;  //编码器
+    RtmpScreen rtscr; // 推送屏幕
 
 };
 

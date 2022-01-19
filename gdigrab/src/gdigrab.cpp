@@ -27,6 +27,8 @@ Gdigrab::Gdigrab()
     E.initVideo();
     E.startEncodec();
 #endif
+
+
 }
 
 Gdigrab::~Gdigrab()
@@ -43,6 +45,8 @@ Gdigrab::~Gdigrab()
 
 bool Gdigrab::open()
 {
+
+
     //设置帧率为5
     av_dict_set(&options,"framerate","5",0);
 
@@ -104,11 +108,14 @@ bool Gdigrab::open()
 #if _ENCODEC_
     E.setSwsCtx(pCodecCtx->pix_fmt,pCodecCtx->width,pCodecCtx->height);
 #endif
+    // 初始化推送
+    rtscr.httRtmp(pFormatCtx);
     return true;
 }
 
 bool Gdigrab::read()
 {
+
     int got_picture = 0;
     static int index = 0;
     if(av_read_frame(pFormatCtx, packet) >= 0) {
@@ -128,12 +135,14 @@ bool Gdigrab::read()
                 index++;
                 E.encodecOneFrame(pFrame,index);
 #endif
+//                rtscr.pushRtmp(*packet,videoindex);
                 av_free_packet(packet);
 
                 return true;
             }
         }
     }
+
     return false;
 }
 

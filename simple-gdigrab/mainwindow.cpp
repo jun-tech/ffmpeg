@@ -24,11 +24,18 @@ MainWindow::MainWindow(QWidget *parent)
     // 初始化设备
     avdevice_register_all();
     pFormatCtx  = avformat_alloc_context();
+
+
+
     qDebug() << "初始化设备成功...";
 }
 
 MainWindow::~MainWindow()
 {
+    av_dict_free(&options);
+    avcodec_close(pCodecCtx);
+    avformat_close_input(&pFormatCtx);
+
     delete ui;
 }
 
@@ -96,14 +103,14 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::readFrame()
 {
     qDebug() << "read frame";
-//    if(av_read_frame(pFormatCtx, packet) >= 0) {
-//         qDebug() << "read finish frame";
-////        if(packet->stream_index == videoindex) {
-////            qDebug() << "find video frame";
-//////            if(avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, packet) < 0) {
-//////                printf("Decode Error.\n");
-//////                return false;
-//////            }
-////        }
-//    }
+    if(av_read_frame(pFormatCtx, packet) >= 0) {
+         qDebug() << "read finish frame";
+//        if(packet->stream_index == videoindex) {
+//            qDebug() << "find video frame";
+//            if(avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, packet) < 0) {
+//                printf("Decode Error.\n");
+//                return false;
+//            }
+//        }
+    }
 }
