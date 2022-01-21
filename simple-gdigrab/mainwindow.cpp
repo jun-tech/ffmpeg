@@ -60,6 +60,8 @@ void MainWindow::initScreen()
     //    av_dict_set(&options, "fflags", "nobuffer", 0);
     // 优化延迟效果 end 2
 
+//    av_dict_set(&options,"video_size","640x480",0);
+
     // 1. 打开输入
     // 1.1 打开输入文件，获取封装格式相关信息
     av_dict_set_int(&options, "rtbufsize", 18432000, 0);

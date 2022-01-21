@@ -54,13 +54,20 @@ bool Gdigrab::open()
     AVInputFormat *ifmt = av_find_input_format("vfwcap");
     if(avformat_open_input(&pFormatCtx,"0",ifmt,NULL)!=0){
 #else
-    //    AVInputFormat *ifmt = av_find_input_format("gdigrab");
-    AVInputFormat *ifmt = av_find_input_format("dshow");
 
-    //    if(avformat_open_input(&pFormatCtx,"desktop",ifmt,&options)!=0) {
+    // 只有gdigrab才支持dshow不支持 *******
+//    av_dict_set(&options, "offset_x", "-1920"  , 0);//这里的负表示第二屏
+//    av_dict_set(&options, "offset_y", "0"  , 0);
+//    av_dict_set(&options,"video_size","1920*1080",0);
+    // 只有desktop才支持dshow不支持 ******
 
     av_dict_set_int(&options, "rtbufsize", 18432000  , 0);
-    if(avformat_open_input(&pFormatCtx,"video=screen-capture-recorder",ifmt,&options)!=0) {
+
+//    AVInputFormat *ifmt = av_find_input_format("gdigrab");
+        AVInputFormat *ifmt = av_find_input_format("dshow");
+
+//        if(avformat_open_input(&pFormatCtx,"desktop",ifmt,&options)!=0) {
+        if(avformat_open_input(&pFormatCtx,"video=screen-capture-recorder",ifmt,&options)!=0) {
 
 #endif
         printf("Couldn't open input stream.\n");
