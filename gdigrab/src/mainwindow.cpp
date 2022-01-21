@@ -29,7 +29,7 @@ void MainWindow::on_pushButton_clicked()
         g = new Gdigrab;
         if(g->open()) {
             timer->start(1000 / g->getFPS());
-            qDebug() << g->getFPS();
+            qDebug() <<" fps: "<< g->getFPS();
         }else {
             qDebug() << "error";
         }

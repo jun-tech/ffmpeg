@@ -1,4 +1,4 @@
-#include "aencode.h"
+﻿#include "aencode.h"
 
 AEncode::AEncode()
 {
@@ -139,6 +139,7 @@ bool AEncode::startEncodec()
  *************/
 bool AEncode::encodecOneFrame(AVFrame *frame, int index)
 {
+    qDebug()<< "encodecOneFrame "<< index;
     //转换图像
     sws_scale(pSwsCtx,(const unsigned char* const*)frame->data,frame->linesize,0,
               frame->height,pVFrame->data,pVFrame->linesize);
@@ -163,7 +164,7 @@ bool AEncode::encodecOneFrame(AVFrame *frame, int index)
     //写入一帧
     int ret = av_interleaved_write_frame(pFormatCtx,pVPacket);
     if(ret < 0) {
-        printf("write frame ret %d.\n",ret);
+        qDebug()<< "write frame ret " << ret;
         fflush(stdout);
         return false;
     }

@@ -1,5 +1,6 @@
 ﻿#include "gdigrab.h"
 #include "stdio.h"
+#include <QDebug>
 
 #define _CAMERA_ 0  //会一直打印警告信息 没发现有什么影响 也不知道怎么处理
 #define _ENCODEC_ 1 //编码部分
@@ -45,8 +46,6 @@ Gdigrab::~Gdigrab()
 
 bool Gdigrab::open()
 {
-
-
     //设置帧率为5
     av_dict_set(&options,"framerate","5",0);
 
@@ -55,8 +54,14 @@ bool Gdigrab::open()
     AVInputFormat *ifmt = av_find_input_format("vfwcap");
     if(avformat_open_input(&pFormatCtx,"0",ifmt,NULL)!=0){
 #else
-    AVInputFormat *ifmt = av_find_input_format("gdigrab");
-    if(avformat_open_input(&pFormatCtx,"desktop",ifmt,&options)!=0) {
+    //    AVInputFormat *ifmt = av_find_input_format("gdigrab");
+    AVInputFormat *ifmt = av_find_input_format("dshow");
+
+    //    if(avformat_open_input(&pFormatCtx,"desktop",ifmt,&options)!=0) {
+
+    av_dict_set_int(&options, "rtbufsize", 18432000  , 0);
+    if(avformat_open_input(&pFormatCtx,"video=screen-capture-recorder",ifmt,&options)!=0) {
+
 #endif
         printf("Couldn't open input stream.\n");
         return false;
@@ -82,10 +87,10 @@ bool Gdigrab::open()
     //解码器上下文
     pCodecCtx=pFormatCtx->streams[videoindex]->codec;
 
-//    printf("width:%d,h:%d,num:%d,den:%d,bit:%d,gop:%d,min:%d,max:%d\n",
-//           pCodecCtx->width,pCodecCtx->height,pCodecCtx->time_base.num,
-//           pCodecCtx->time_base.den,pCodecCtx->bit_rate,pCodecCtx->gop_size,
-//           pCodecCtx->qmin,pCodecCtx->qmax);
+    //    printf("width:%d,h:%d,num:%d,den:%d,bit:%d,gop:%d,min:%d,max:%d\n",
+    //           pCodecCtx->width,pCodecCtx->height,pCodecCtx->time_base.num,
+    //           pCodecCtx->time_base.den,pCodecCtx->bit_rate,pCodecCtx->gop_size,
+    //           pCodecCtx->qmin,pCodecCtx->qmax);
     //查找解码器
     pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
     if(pCodec==NULL) {
@@ -108,8 +113,7 @@ bool Gdigrab::open()
 #if _ENCODEC_
     E.setSwsCtx(pCodecCtx->pix_fmt,pCodecCtx->width,pCodecCtx->height);
 #endif
-    // 初始化推送
-    rtscr.httRtmp(pFormatCtx);
+
     return true;
 }
 
@@ -119,6 +123,7 @@ bool Gdigrab::read()
     int got_picture = 0;
     static int index = 0;
     if(av_read_frame(pFormatCtx, packet) >= 0) {
+
         if(packet->stream_index == videoindex) {
             if(avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, packet) < 0) {
                 printf("Decode Error.\n");
@@ -135,7 +140,6 @@ bool Gdigrab::read()
                 index++;
                 E.encodecOneFrame(pFrame,index);
 #endif
-//                rtscr.pushRtmp(*packet,videoindex);
                 av_free_packet(packet);
 
                 return true;
@@ -166,6 +170,8 @@ void Gdigrab::setOptions(int x, int y, int width, int height)
     av_dict_set(&options,"offset_x",offset_x,0);
     av_dict_set(&options,"offset_y",offset_y,0);
     av_dict_set(&options,"video_size",video_size,0);
+
+    qDebug()<<"setOptions ...";
 }
 
 void Gdigrab::stop()
