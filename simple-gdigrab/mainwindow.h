@@ -32,6 +32,7 @@ private slots:
     void initScreen();
     void readFrame();
     void stopScreen();
+    void freeScreen();
 
     void on_pushButton_2_clicked();
 

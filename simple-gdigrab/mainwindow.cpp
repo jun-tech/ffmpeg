@@ -30,6 +30,8 @@ MainWindow::~MainWindow()
     if(isOpen){
         this->stopScreen();
     }
+    this->freeScreen();
+    qDebug() << "销毁录屏";
     delete ui;
 }
 
@@ -60,7 +62,7 @@ void MainWindow::initScreen()
     //    av_dict_set(&options, "fflags", "nobuffer", 0);
     // 优化延迟效果 end 2
 
-//    av_dict_set(&options,"video_size","640x480",0);
+    //    av_dict_set(&options,"video_size","640x480",0);
 
     // 1. 打开输入
     // 1.1 打开输入文件，获取封装格式相关信息
@@ -142,7 +144,7 @@ void MainWindow::initScreen()
     pH264CodecCtx->qmin = 10;   //调节清晰度和编码速度 //这个值调节编码后输出数据量越大输出数据量越小，越大编码速度越快，清晰度越差
     pH264CodecCtx->qmax = 51;   //调节清晰度和编码速度
     //    pH264CodecCtx->qcompress=0.6;
-    //     pH264CodecCtx->max_b_frames = 0; //去掉B帧
+    //         pH264CodecCtx->max_b_frames = 0; //低延迟，去掉B帧会出现花屏，不建议开启
     //some formats want stream headers to be separate
     //	if (pH264CodecCtx->flags & AVFMT_GLOBALHEADER)
     {
@@ -151,7 +153,11 @@ void MainWindow::initScreen()
 
     // 1.7 打开H.264编码器
     av_dict_set(&params, "buffer_size", "1024000", 0);// 1.buffer_size：减少卡顿或者花屏现象，相当于增加或扩大了缓冲区，给予编码和发送足够的时间。
-    av_dict_set(&params, "preset", "superfast", 0);
+    // 低延迟 bg
+    //    av_dict_set(&params, "preset", "superfast", 0);
+    av_dict_set(&params, "preset", "ultrafast", 0);
+    av_dict_set(&params, "profile", "baseline", 0);
+    // 低延迟 ed
     av_dict_set(&params, "tune", "zerolatency", 0);	//实现实时编码
     //    av_dict_set(&params, "video_size", "1920*1080", 0);
 
@@ -177,10 +183,10 @@ void MainWindow::initScreen()
         ofmtName = NULL;
     }
 
-    avformat_alloc_output_context2(&ofmtCtx, NULL, ofmtName, outFilename);
+    ret = avformat_alloc_output_context2(&ofmtCtx, NULL, ofmtName, outFilename);
     if (!ofmtCtx)
     {
-        qDebug()<<"can't create output context\n";
+        qDebug()<<"can't create output context. " << ret;
         return;
     }
 
@@ -242,23 +248,13 @@ void MainWindow::stopScreen()
     frameIndex = 0;
     videoIndex = -1;
     ret = 0;
-
-    qDebug() << "停止录屏";
     av_write_trailer(ofmtCtx);
-    avformat_close_input(&ifmtCtx);
-
-    /* close output */
-    if (ofmtCtx && !(ofmtCtx->oformat->flags & AVFMT_NOFILE)) {
-        avio_closep(&ofmtCtx->pb);
-    }
-    avformat_free_context(ofmtCtx);
-
-    if (ret < 0 && ret != AVERROR_EOF) {
-        qDebug()<< "Error occurred\n";
-    }
-
+    this->freeScreen();
+    isOpen = false;
+    qDebug() << "暂停录屏";
 }
 
+// 开启录屏
 void MainWindow::on_pushButton_clicked()
 {
     if(isOpen){
@@ -335,6 +331,25 @@ void MainWindow::readFrame()
     }
 
     av_packet_unref(&pkt);
+}
+
+void MainWindow::freeScreen()
+{
+    if(isOpen)
+    {
+        avformat_close_input(&ifmtCtx);
+        /* close output */
+        if (ofmtCtx && !(ofmtCtx->oformat->flags & AVFMT_NOFILE)) {
+            avio_closep(&ofmtCtx->pb);
+        }
+        avformat_free_context(ofmtCtx);
+
+        if (ret < 0 && ret != AVERROR_EOF) {
+            qDebug()<< "Error occurred\n";
+        }
+    }
+
+    qDebug() << "销毁录屏";
 }
 
 void MainWindow::on_pushButton_2_clicked()
