@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
 extern "C"{
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -63,7 +64,14 @@ private:
     // ffmpeg -list_devices true -f dshow -i dummy
     // video=xxxxx
     // xxxx值: 摄像头、桌面等
+// 需要安装Record Desktop Screen Capturer Recorder软件
     const char *inFilename = "video=screen-capture-recorder";//输入URL windows里有gdigrab或dshow 2种方式，这里的选取可以查看文档http://blog.yundiantech.com/?log=blog&id=17
+    const char *inWay="dshow";
+
+// 下面这种方式，感觉性能有点差
+//    const char *inFilename = "desktop";
+//    const char *inWay="gdigrab";
+
 
     const char *outFilename = "rtmp://127.0.0.1:1935/hls/myscreen"; //输出URL
 //    const char *outFilename = "rtmp://192.168.0.55:1935/hls/myscreen"; //公司国产机

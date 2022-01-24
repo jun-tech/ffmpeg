@@ -51,10 +51,10 @@ void MainWindow::initScreen()
     //    ifmtCtx->max_analyze_duration = 2000;
     // 优化延迟效果 end 1
 
-    AVInputFormat *ifmt = av_find_input_format("dshow");
+    AVInputFormat *ifmt = av_find_input_format(inWay);
     if (!ifmt)
     {
-        qDebug()<<"can't find input device\n";
+        qDebug()<<"can't find input device."<<inWay;
         return;
     }
 
@@ -62,7 +62,16 @@ void MainWindow::initScreen()
     //    av_dict_set(&options, "fflags", "nobuffer", 0);
     // 优化延迟效果 end 2
 
+    // 获取区域
+    // Linux
     //    av_dict_set(&options,"video_size","640x480",0);
+    // Windows gdigrab方式才支持
+//    av_dict_set(&options,"video_size","1920x1080",0);
+//    av_dict_set_int(&options,"offset_x",-1920,0); //代表第二屏
+
+
+    // 采集窗体录制
+//    av_dict_set(&options,"i","录屏推送",0);
 
     // 1. 打开输入
     // 1.1 打开输入文件，获取封装格式相关信息
@@ -148,7 +157,7 @@ void MainWindow::initScreen()
     //some formats want stream headers to be separate
     //	if (pH264CodecCtx->flags & AVFMT_GLOBALHEADER)
     {
-        pH264CodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER | AV_CODEC_FLAG_LOW_DELAY;
+        pH264CodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     }
 
     // 1.7 打开H.264编码器
