@@ -42,6 +42,15 @@ LIBS += -L$$PWD/lib/win64/ffmpeg/lib -lavcodec -lavdevice -lavfilter -lavformat 
 
 }
 
+unix{
+
+#INCLUDEPATH += $$PWD/ffmpeg-4.4/include
+#LIBS += -L$$PWD/ffmpeg-4.4/lib -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
+
+INCLUDEPATH += /data/home/jun/mysoft-installed/ffmpeg-4.4/include
+LIBS += -L/data/home/jun/mysoft-installed/ffmpeg-4.4/lib -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
+}
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp
