@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -65,7 +65,7 @@ private:
     // video=xxxxx
     // xxxx值: 摄像头、桌面等
 // 需要安装Record Desktop Screen Capturer Recorder软件
-#ifdef win32
+#ifdef WIN32
     const char *inFilename = "video=screen-capture-recorder";//输入URL windows里有gdigrab或dshow 2种方式，这里的选取可以查看文档http://blog.yundiantech.com/?log=blog&id=17
     const char *inWay="dshow";
 #endif

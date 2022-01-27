@@ -27,17 +27,14 @@ win32{
 
 contains(QT_ARCH, i386) {
 message("32-bit")
-INCLUDEPATH += $$PWD/lib/win32/ffmpeg/include
-$$PWD/src
-
-LIBS += -L$$PWD/lib/win32/ffmpeg/lib -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
-
+    INCLUDEPATH += $$PWD/lib/win32/ffmpeg/include
+    $$PWD/src
+    LIBS += -L$$PWD/lib/win32/ffmpeg/lib -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
 } else {
 message("64-bit")
-INCLUDEPATH += $$PWD/lib/win64/ffmpeg/include
-$$PWD/src
-
-LIBS += -L$$PWD/lib/win64/ffmpeg/lib -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
+    INCLUDEPATH += $$PWD/lib/win64/ffmpeg/include
+    $$PWD/src
+    LIBS += -L$$PWD/lib/win64/ffmpeg/lib -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
 }
 
 }

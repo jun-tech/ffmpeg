@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 
@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     // 赋值
     this->ui->pushUrl->setText(QLatin1String(outFilename));
 
-#ifdef win32
+#ifdef WIN32
     qDebug()<<"env is win32";
 #endif
 #ifdef linux
